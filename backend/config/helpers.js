@@ -1,18 +1,18 @@
-let Mysqli = require('mysqli');
+const mysql = require('mysql2/promise');
 
-// Create a new Mysqli connection instance
-let conn = new Mysqli({
-  host: 'localhost', // IP/domain
-  port: 3307, // Port, default is 3306
-  user: 'root', // Username
-  passwd: '78563', // Password
-  charset: 'utf8', // CHARSET of the database, optional
-  db: 'electromartdb' // The default database name, optional
+// Create the connection pool
+const pool = mysql.createPool({
+  host: 'localhost',       // MySQL Host (your machine for local dev)
+  port: 3307,              // MySQL Port (same as Workbench config)
+  user: 'root',            // MySQL Username
+  password: '78563',       // MySQL Password
+  database: 'electromartdb', // MySQL Database Name
+  waitForConnections: true,
+  connectionLimit: 10,      // Connection pool size
+  queueLimit: 0,
 });
 
-// Emit a connection to the specified database
-let db = conn.emit(false, 'electromartdb');
-
+// Function to execute queries
 const executeQuery = async (query, params = []) => {
   try {
     const [results] = await pool.execute(query, params);
